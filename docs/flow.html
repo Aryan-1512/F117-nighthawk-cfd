@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>F-117: air flow | CFD animation</title>
+<meta name="description" content="Animated streamlines from an SU2 Euler simulation of an F-117 Nighthawk model at Mach 0.80.">
+<link rel="icon" href="data:,">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Barlow:wght@400;500&family=Barlow+Semi+Condensed:wght@500;600&display=swap" rel="stylesheet">
+<style>
+  :root { --slate: #1d2733; --line: #3b4958; --ink: #e7ebef; --muted: #9aa8b6;
+    --font: 'Barlow', system-ui, sans-serif; --font-head: 'Barlow Semi Condensed', 'Barlow', system-ui, sans-serif; }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; background: var(--slate); color: var(--ink); font: 400 15px/1.5 var(--font); overflow: hidden; }
+  #scene { position: fixed; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+  .vignette { position: fixed; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse at 55% 45%, transparent 45%, rgba(10,16,22,.5) 100%); }
+  header { position: fixed; top: 28px; left: 32px; max-width: 30rem; pointer-events: none; }
+  h1 { font: 600 clamp(28px, 4vw, 44px)/1.05 var(--font-head); margin: 0 0 .35em; letter-spacing: -.01em; }
+  p { margin: 0; }
+  .lede { color: var(--muted); max-width: 27rem; }
+  .legend { position: fixed; left: 32px; bottom: 28px; width: min(320px, calc(100vw - 64px)); }
+  .legend h2 { font: 600 15px var(--font-head); margin: 0 0 8px; }
+  .scale { position: relative; }
+  #bar { width: 100%; height: 12px; border-radius: 3px; display: block; }
+  .ticks { position: relative; height: 22px; font-size: 13px; color: var(--muted); }
+  .ticks span { position: absolute; top: 4px; }
+  #lo { left: 0; } #hi { right: 0; }
+  #one { transform: translateX(-50%); color: var(--ink); white-space: nowrap; }
+  .hint { font-size: 13px; color: var(--muted); margin-top: 6px; }
+  footer { position: fixed; right: 32px; bottom: 28px; font-size: 13px; color: var(--muted); text-align: right; }
+  footer a { color: var(--ink); }
+  a:focus-visible { outline: 2px solid #8fb7ff; outline-offset: 2px; }
+  #status { position: fixed; inset: 0; display: grid; place-items: center; color: var(--muted); pointer-events: none; padding: 2rem; text-align: center; }
+  body.ready #status { display: none; }
+  body:not(.ready) .legend { visibility: hidden; }
+  @media (max-width: 760px) {
+    header { top: 16px; left: 16px; right: 16px; }
+    .lede { font-size: 14px; }
+    .legend { left: 16px; bottom: 16px; }
+    footer { display: none; }
+  }
+</style>
+</head>
+<body>
+<canvas id="scene" aria-label="Animated streamlines of air flowing around the F-117"></canvas>
+<div class="vignette"></div>
+<div id="status">Loading the flow data</div>
+
+<header>
+  <h1>Air flow around the F-117</h1>
+  <p class="lede">Each streak follows the path the air takes past the aircraft and moves at the speed the simulation computed. The air splits at the nose, speeds up over the faceted upper body and flows off the tail.</p>
+</header>
+
+<div class="legend">
+  <h2>Local Mach number</h2>
+  <div class="scale"><canvas id="bar" width="320" height="12"></canvas></div>
+  <div class="ticks"><span id="lo"></span><span id="one">1, speed of sound</span><span id="hi"></span></div>
+  <p class="hint">Drag to rotate, scroll or pinch to zoom, right-drag to pan.</p>
+</div>
+
+<footer>
+  <a href="./">Surface pressure and Mach viewer</a><br>
+  <a href="https://github.com/Aryan-1512/F117-nighthawk-cfd">Project files and write-up on GitHub</a><br>
+  Original 3D model: <a href="https://grabcad.com/library/f117-nighthawk-2">F-117 Nighthawk on GrabCAD</a>
+</footer>
+
+<script>window.FLOW_CONFIG = {"surface": "data/f117_surface", "streamlines": "data/f117_streamlines", "flatShading": true, "view": [-1.0, -0.9, 0.6], "distance": 1.5};</script>
+<script type="importmap">{ "imports": { "three": "./vendor/three.module.min.js" } }</script>
+<script type="module" src="flow.js"></script>
+</body>
+</html>
